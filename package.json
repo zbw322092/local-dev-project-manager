@@ -1,0 +1,13 @@
+{
+  "name": "local-dev-project-manager",
+  "version": "0.0.1",
+  "description": "local development project manager. List, open, build, publish project and so on",
+  "main": "main.ts",
+  "author": "zbw322092 <zbw322092@hotmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^2.0.2",
+    "tslint": "^5.10.0",
+    "typescript": "^2.9.1"
+  }
+}
