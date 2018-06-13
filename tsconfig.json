@@ -7,6 +7,10 @@
     "baseUrl": ".",
     "jsx": "react",
     "target": "es5",
+    "lib": [
+      "dom",
+      "es7"
+    ],
     "paths": {
       "*": ["node_modules/*"]
     }

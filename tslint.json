@@ -47,7 +47,8 @@
     "prefer-for-of": false,
     "quotemark": [
       true,
-      "single"
+      "single",
+      "jsx-double"
     ],
     "trailing-comma": false,
     "no-trailing-whitespace": [

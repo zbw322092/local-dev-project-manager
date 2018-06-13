@@ -1,23 +1,3 @@
-// import { app, BrowserWindow } from 'electron';
-// import * as path from 'path';
-
-// let mainWindow: Electron.BrowserWindow;
-
-// function createWindow() {
-
-//   mainWindow = new BrowserWindow({
-//     height: 600,
-//     width: 800
-//   });
-
-//   mainWindow.loadFile(path.join(__dirname, '../index.html'));
-
-//   // Open the DevTools.
-//   mainWindow.webContents.openDevTools();
-// }
-
-// app.on('ready', createWindow);
-
 import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
 import { format as formatUrl } from 'url';
