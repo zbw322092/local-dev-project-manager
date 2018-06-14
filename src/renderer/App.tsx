@@ -35,7 +35,8 @@ export default class App extends React.Component<any, any> {
     console.log(projectEntries);
     this.setState({
       venusProjectsList: this.state.venusProjectsList,
-      projectEntries
+      projectEntries,
+      showWelcomePage: false
     });
   }
 
@@ -61,14 +62,21 @@ export default class App extends React.Component<any, any> {
               this.state.showWelcomePage ? <WelcomePage /> :
                 (
                   <div className="panel-content">
-                    <div className="project-icon" />
-                    <div className="project-terminal" />
                     <div className="action-panel">
+                      {/* <div className="project-icon" />
+                      <div className="project-terminal" /> */}
                       <button className="action-serve">Serve</button>
                       <button className="action-build">Build</button>
                       <button className="action-publish-inte">Publish Inte</button>
                       <button className="action-publish-prod">Publish Prod</button>
                       <button className="action-zip">Zip</button>
+                    </div>
+                    <div className="modules-list">
+                      {
+                        this.state.projectEntries.map((entry: string, index: number) => {
+                          return <div className="module" key={index}>{ entry }</div>;
+                        })
+                      }
                     </div>
                   </div>
                 )

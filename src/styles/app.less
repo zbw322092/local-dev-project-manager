@@ -9,6 +9,8 @@ body {
   min-width: 1000px;
   display: grid;
   grid-template-rows: 50px auto;
+  background: linear-gradient(45deg, #18273a, #3d4c5f);
+  overflow: hidden;
   .manager-container {
     display: grid;
     height: 100%;
@@ -17,11 +19,14 @@ body {
   .side-bar {
     display: inline-block;
     height: 100%;
-    background: #e4e4e4;
+    box-sizing: border-box;
+    background: linear-gradient(45deg, #18273a, #3d4c5f);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     vertical-align: top;
+    color: #838f9d;
+    padding-top: 8px;
 
     .project {
       width: 230px;
@@ -33,15 +38,6 @@ body {
       margin-left: auto;
       margin-right: auto;
 
-      .project-icon {
-        cursor: pointer;
-        display: inline-block;
-        width: 20px;
-        height: 20px;
-        .background( 'icon-project-directory.png');
-        vertical-align: middle;
-      }
-
       .project-name {
         cursor: pointer;
         display: inline-block;
@@ -50,7 +46,30 @@ body {
         font-size: 20px;
         font-weight: 400;
       }
+    }
 
+    .active-project {
+      background: rgba(238, 238, 238, 0.6);
+      color: #333333;
+    }
+  }
+
+  .manager-panel {
+    display: inline-block;
+    height: 100%;
+    vertical-align: top;
+    .action-panel {
+      margin-top: 8px;
+
+      .project-icon {
+        cursor: pointer;
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        .background( 'icon-project-directory.png');
+        vertical-align: middle;
+      }
+  
       .project-terminal {
         cursor: pointer;
         display: inline-block;
@@ -60,73 +79,6 @@ body {
         vertical-align: middle;
         margin-left: 5px;
       }
-
-      .action-panel {
-        margin-top: 8px;
-
-        button {
-          cursor: pointer;
-          border: none;
-          padding: 8px;
-          border-radius: 8px;
-          font-size: 12px;
-          margin-right: 8px;
-          color: #fff;
-        }
-
-        .action-serve {
-          color: #212529;
-          background: #ffc107;
-        }
-
-        .action-build {
-          background: #007bff;
-        }
-
-        .action-publish-inte {
-          background: #17a2b8;
-        }
-
-        .action-publish-prod {
-          background: #6c757d;
-        }
-
-        .action-zip {
-          background: #28a745;
-        }
-      }
-    }
-
-    .active-project {
-      background: #eeeeee;
-    }
-  }
-
-  .manager-panel {
-    display: inline-block;
-    height: 100%;
-    vertical-align: top;
-    .project-icon {
-      cursor: pointer;
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      .background( 'icon-project-directory.png');
-      vertical-align: middle;
-    }
-
-    .project-terminal {
-      cursor: pointer;
-      display: inline-block;
-      width: 15px;
-      height: 12px;
-      .background( 'icon-terminal.png');
-      vertical-align: middle;
-      margin-left: 5px;
-    }
-
-    .action-panel {
-      margin-top: 8px;
 
       button {
         cursor: pointer;
@@ -157,6 +109,14 @@ body {
 
       .action-zip {
         background: #28a745;
+      }
+    }
+    .modules-list {
+      .module {
+        color: #f4f0e7;
+        font-size: 18px;
+        padding-left: 8px;
+        margin-top: 12px;
       }
     }
   }
