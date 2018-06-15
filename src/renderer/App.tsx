@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { DirectoryScanner } from './DirectoryScanner';
 import Headers from './Header';
-import WelcomePage from './WelcomePage';
+import ProjectMainPanel from './ProjectMainPanel';
 
 export default class App extends React.Component<any, any> {
   constructor(props: any) {
@@ -19,13 +19,15 @@ export default class App extends React.Component<any, any> {
     this.state = {
       venusProjectsList,
       projectEntries: [],
-      showWelcomePage: true
+      formatProjectEntries: [],
+      showWelcomePage: true,
+      activeProjectName: ''
     };
   }
   private directoryScanner: DirectoryScanner;
 
   public selectProject = (projectName: string, index: number) => {
-    const projectEntries = this.directoryScanner.listVenusModules(projectName);
+    const projectEntries = this.directoryScanner.listVenusModules(projectName).sort();
     this.state.venusProjectsList.forEach((v: any, k: number) => {
       if (k === index) {
         return v.active = true;
@@ -33,10 +35,21 @@ export default class App extends React.Component<any, any> {
       return v.active = false;
     });
     console.log(projectEntries);
+
+    const formatProjectEntries = projectEntries.map((entry: { entryKey: string, entryValue: string; }) => {
+      const lastSlashIndex = entry.entryKey.lastIndexOf('/');
+      const entryKeyQuery = entry.entryKey.indexOf('?') === -1 ? undefined : entry.entryKey.indexOf('?');
+      return {
+        prev: entry.entryKey.slice(0, lastSlashIndex + 1),
+        last: entry.entryKey.slice(lastSlashIndex + 1, entryKeyQuery),
+        entryPath: entry.entryValue
+      };
+    });
     this.setState({
       venusProjectsList: this.state.venusProjectsList,
-      projectEntries,
-      showWelcomePage: false
+      formatProjectEntries,
+      showWelcomePage: false,
+      activeProjectName: projectName
     });
   }
 
@@ -57,32 +70,11 @@ export default class App extends React.Component<any, any> {
               })
             }
           </div>
-          <div className="manager-panel">
-            {
-              this.state.showWelcomePage ? <WelcomePage /> :
-                (
-                  <div className="panel-content">
-                    <div className="action-panel">
-                      {/* <div className="project-icon" />
-                      <div className="project-terminal" /> */}
-                      <button className="action-serve">Serve</button>
-                      <button className="action-build">Build</button>
-                      <button className="action-publish-inte">Publish Inte</button>
-                      <button className="action-publish-prod">Publish Prod</button>
-                      <button className="action-zip">Zip</button>
-                    </div>
-                    <div className="modules-list">
-                      {
-                        this.state.projectEntries.map((entry: string, index: number) => {
-                          return <div className="module" key={index}>{ entry }</div>;
-                        })
-                      }
-                    </div>
-                  </div>
-                )
-            }
-
-          </div>
+          <ProjectMainPanel
+            projectName={this.state.activeProjectName}
+            showWelcomePage={this.state.showWelcomePage}
+            formatProjectEntries={this.state.formatProjectEntries}
+          />
         </div>
       </div>
     );
