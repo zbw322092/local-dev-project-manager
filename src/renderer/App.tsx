@@ -40,6 +40,7 @@ export default class App extends React.Component<any, any> {
       const lastSlashIndex = entry.entryKey.lastIndexOf('/');
       const entryKeyQuery = entry.entryKey.indexOf('?') === -1 ? undefined : entry.entryKey.indexOf('?');
       return {
+        entryKey: entry.entryKey,
         prev: entry.entryKey.slice(0, lastSlashIndex + 1),
         last: entry.entryKey.slice(lastSlashIndex + 1, entryKeyQuery),
         entryPath: entry.entryValue

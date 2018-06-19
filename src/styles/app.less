@@ -8,13 +8,17 @@ body {
   height: 100vh;
   min-width: 1000px;
   display: grid;
-  grid-template-rows: 50px auto;
   background: linear-gradient(45deg, #18273a, #3d4c5f);
   overflow: hidden;
   .manager-container {
+    position: fixed;
     display: grid;
     height: 100%;
     grid-template-columns: 240px auto;
+    top: 50px;
+    bottom: 0px;
+    left: 0;
+    right: 0;
   }
   .side-bar {
     display: inline-block;

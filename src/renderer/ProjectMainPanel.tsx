@@ -4,10 +4,12 @@ import * as fs from 'fs';
 import WelcomePage from './WelcomePage';
 import { defaultWorkspace } from '../common/paths';
 import { exec } from 'child_process';
+import { StringDecoder } from 'string_decoder';
+const decoder = new StringDecoder('utf8');
 
 interface ProjectMainPanelProps {
   showWelcomePage: boolean;
-  formatProjectEntries: { prev: string, last: string, entryPath: string };
+  formatProjectEntries: { entryKey: string, prev: string, last: string, entryPath: string };
   projectName: string;
 }
 
@@ -44,6 +46,33 @@ export default class ProjectMainPanel extends React.Component<ProjectMainPanelPr
     exec(`code ${targetprojectPath} ${targetModulePath}`);
   }
 
+  public operateServe = (entryKey: string): void => {
+    const cwdPath = path.resolve(defaultWorkspace, this.state.projectName) + '/';
+    const execProcess = exec(`cd ${cwdPath} && venus serve -m "${entryKey}"`);
+
+    Object.assign(process.stdout, {
+      isTTY: true
+    });
+    Object.assign(execProcess.stdout, {
+      isTTY: true
+    });
+
+    console.log('process.stdout pid: ', process.pid);
+    console.log('execProcess.stdout pid: ', execProcess.pid);
+
+    execProcess.stdout.on('data', (data) => {
+      console.log(`stdout: ${decoder.write(data as Buffer)}`);
+      const isConfirmPropmt = data.toString().includes('Please confirm above modules you could like? (Y/n)');
+      if (isConfirmPropmt) {
+        execProcess.stdin.write('\n');
+      }
+    });
+
+    setTimeout(() => {
+      execProcess.kill();
+    }, 60000);
+  }
+
   public render() {
     return (
       <div className="manager-panel">
@@ -51,16 +80,9 @@ export default class ProjectMainPanel extends React.Component<ProjectMainPanelPr
           this.state.showWelcomePage ? <WelcomePage /> :
             (
               <div className="panel-content">
-                <div className="action-panel">
-                  <button className="action-serve">Serve</button>
-                  <button className="action-build">Build</button>
-                  <button className="action-publish-inte">Publish Inte</button>
-                  <button className="action-publish-prod">Publish Prod</button>
-                  <button className="action-zip">Zip</button>
-                </div>
                 <div className="modules-list">
                   {
-                    this.state.formatProjectEntries.map((entry: { prev: string, last: string, entryPath: string }, index: number) => {
+                    this.state.formatProjectEntries.map((entry: { entryKey: string, prev: string, last: string, entryPath: string }, index: number) => {
                       return (
                         <div key={index} className="module">
                           <div className="module-icon" onClick={this.openProjectVsCode.bind(this, entry.entryPath)} />
@@ -69,6 +91,13 @@ export default class ProjectMainPanel extends React.Component<ProjectMainPanelPr
                             {
                               entry.last === '' ? null : <span className="last-half">{entry.last}</span>
                             }
+                          </div>
+                          <div className="module-action">
+                            <button className="action-serve" onClick={this.operateServe.bind(this, entry.entryKey)}>Serve</button>
+                            <button className="action-build">Build</button>
+                            <button className="action-publish-inte">Publish Inte</button>
+                            <button className="action-publish-prod">Publish Prod</button>
+                            <button className="action-zip">Zip</button>
                           </div>
                         </div>
                       );
