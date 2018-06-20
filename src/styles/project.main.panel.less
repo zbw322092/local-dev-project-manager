@@ -9,6 +9,7 @@
   .modules-list {
     padding-left: 10px;
     padding-top: 20px;
+    padding-bottom: 50px;
 
     .module {
       margin-bottom: 20px;
@@ -41,17 +42,27 @@
         padding-left: 28px;
     
         button {
+          position: relative;
+          height: 36px;
+          width: 80px;
           cursor: pointer;
           border: none;
-          padding: 8px;
+          padding-left: 8px;
+          padding-right: 8px;
           border-radius: 8px;
           font-size: 12px;
           margin-right: 8px;
           color: #fff;
           opacity: 0.2;
+          vertical-align: middle;
+          box-sizing: border-box;
         }
 
         button:hover {
+          opacity: 1;
+        }
+
+        .working {
           opacity: 1;
         }
     
@@ -77,6 +88,29 @@
         }
       }
 
+    }
+  }
+
+  .working-loading {
+    display: inline-block;
+  }
+  .working-loading:after {
+    content: " ";
+    display: block;
+    width: 10px;
+    height: 10px;
+    margin: 1px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    border-color: #fff transparent #fff transparent;
+    animation: working-loading 1.2s linear infinite;
+  }
+  @keyframes working-loading {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
     }
   }
 }
