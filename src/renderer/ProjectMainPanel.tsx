@@ -56,6 +56,14 @@ export default class ProjectMainPanel extends React.Component<ProjectMainPanelPr
     const cwdPath = path.resolve(defaultWorkspace, this.state.projectName) + '/';
     const execServeProcess = exec(`cd ${cwdPath} && venus serve -m "${entryKey}"`);
 
+    // psTree(execServeProcess.pid, (error: any, children: any[]) => {
+    //   children.forEach((p) => {
+    //     console.log('child process pid: ', p.PID);
+    //     console.log('child process', p);
+    //     Object.assign(p, { stdout: { isTTY: true } });
+    //   });
+    // });
+
     execServeProcess.stdout.on('data', (data) => {
       console.log(`stdout: ${decoder.write(data as Buffer)}`);
       const isConfirmPropmt = data.toString().includes('Please confirm above modules you could like? (Y/n)');
@@ -196,12 +204,12 @@ export default class ProjectMainPanel extends React.Component<ProjectMainPanelPr
                     }
                   </div>
                   <div className="module-action">
-                    <button className={`action-serve ${this.state[serveStateKey] ? 'working' : ''}`}
+                    {/* <button className={`action-serve ${this.state[serveStateKey] ? 'working' : ''}`}
                       onClick={this.operateServe.bind(this, entry.entryKey, serveStateKey)}>
                       {
                         this.state[serveStateKey] ? <div className="working-loading"></div> : <div>Serve</div>
                       }
-                    </button>
+                    </button> */}
 
                     <button className={`action-build ${this.state[buildStateKey] ? 'working' : ''}`}
                       onClick={this.operateBuild.bind(this, entry.entryKey, buildStateKey)}>
