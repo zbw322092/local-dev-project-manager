@@ -13,6 +13,12 @@ interface ProjectMainPanelProps {
   projectName: string;
 }
 
+declare global {
+  interface Window {
+    Notification: any;
+  }
+}
+
 export default class ProjectMainPanel extends React.Component<ProjectMainPanelProps, any> {
   constructor(props: ProjectMainPanelProps, context: any) {
     super(props, context);
@@ -104,6 +110,7 @@ export default class ProjectMainPanel extends React.Component<ProjectMainPanelPr
     execBuildProcess.on('exit', () => {
       stateObj[stateProps] = false;
       this.setState(stateObj);
+      this.operationNotification('build success', `${entryKey} module has built successfully`);
       console.log('build finish');
     });
   }
@@ -129,6 +136,7 @@ export default class ProjectMainPanel extends React.Component<ProjectMainPanelPr
     execPublishInteProcess.on('exit', () => {
       stateObj[stateProps] = false;
       this.setState(stateObj);
+      this.operationNotification('publish inte success', `${entryKey} module has published inte successfully`);
       console.log('publish inte finish');
     });
   }
@@ -154,6 +162,7 @@ export default class ProjectMainPanel extends React.Component<ProjectMainPanelPr
     execPublishProdProcess.on('exit', () => {
       stateObj[stateProps] = false;
       this.setState(stateObj);
+      this.operationNotification('publish prod success', `${entryKey} module has published prod successfully`);
       console.log('publish prod finish');
     });
   }
@@ -179,8 +188,16 @@ export default class ProjectMainPanel extends React.Component<ProjectMainPanelPr
     execPublishProdProcess.on('exit', () => {
       stateObj[stateProps] = false;
       this.setState(stateObj);
+      this.operationNotification('zip success', `${entryKey} module has zipped successfully`);
       console.log('zip finish');
     });
+  }
+
+  public operationNotification(title: string, body: string): any {
+    const notificationConfig = {
+      title, body
+    };
+    return new Notification(notificationConfig.title, notificationConfig);
   }
 
   public renderMainPanel() {
@@ -189,7 +206,7 @@ export default class ProjectMainPanel extends React.Component<ProjectMainPanelPr
         <div className="modules-list">
           {
             this.state.formatProjectEntries.map((entry: { entryKey: string, prev: string, last: string, entryPath: string }, index: number) => {
-              const serveStateKey = `${index}-serve`;
+              // const serveStateKey = `${index}-serve`;
               const buildStateKey = `${index}-build`;
               const pubInteStateKey = `${index}-publish-inte`;
               const pubProdStateKey = `${index}-publish-prod`;
