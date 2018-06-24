@@ -3,15 +3,24 @@ import * as path from 'path';
 import * as fs from 'fs';
 import WelcomePage from './WelcomePage';
 import { defaultWorkspace } from '../common/paths';
-import { exec } from 'child_process';
+import { exec, ChildProcess } from 'child_process';
 import { StringDecoder } from 'string_decoder';
 const decoder = new StringDecoder('utf8');
 
+interface ProjectEntriesProps {
+  entryKey: string;
+  prev: string;
+  last: string;
+  entryPath: string;
+}
+
 interface ProjectMainPanelProps {
   showWelcomePage: boolean;
-  formatProjectEntries: { entryKey: string, prev: string, last: string, entryPath: string };
+  formatProjectEntries: ProjectEntriesProps[];
   projectName: string;
 }
+
+type VenusCmdType = 'build' | 'publishInte' | 'publishProd' | 'zip';
 
 declare global {
   interface Window {
@@ -25,7 +34,12 @@ export default class ProjectMainPanel extends React.Component<ProjectMainPanelPr
 
     this.state = {
       showWelcomePage: true,
-      formatProjectEntries: []
+      formatProjectEntries: [],
+      selectEntryPaths: [],
+      buildingSelected: false,
+      publishingInteSelected: false,
+      publishingProdSelected: false,
+      zippingSelected: false
     };
   }
 
@@ -52,147 +66,6 @@ export default class ProjectMainPanel extends React.Component<ProjectMainPanelPr
     exec(`code ${targetprojectPath} ${targetModulePath}`);
   }
 
-  // serve module
-  public operateServe = (entryKey: string, stateProps: string): void => {
-    if (this.state[stateProps]) { return; } // if operation is working, return;
-    const stateObj = {} as any;
-    stateObj[stateProps] = true;
-    this.setState(stateObj);
-
-    const cwdPath = path.resolve(defaultWorkspace, this.state.projectName) + '/';
-    const execServeProcess = exec(`cd ${cwdPath} && venus serve -m "${entryKey}"`);
-
-    // psTree(execServeProcess.pid, (error: any, children: any[]) => {
-    //   children.forEach((p) => {
-    //     console.log('child process pid: ', p.PID);
-    //     console.log('child process', p);
-    //     Object.assign(p, { stdout: { isTTY: true } });
-    //   });
-    // });
-
-    execServeProcess.stdout.on('data', (data) => {
-      console.log(`stdout: ${decoder.write(data as Buffer)}`);
-      const isConfirmPropmt = data.toString().includes('Please confirm above modules you could like? (Y/n)');
-      if (isConfirmPropmt) {
-        execServeProcess.stdin.write('\n');
-      }
-    });
-
-    setTimeout(() => {
-      execServeProcess.kill();
-    }, 60000);
-
-    execServeProcess.on('exit', () => {
-      stateObj[stateProps] = false;
-      this.setState(stateObj);
-      console.log('serve down');
-    });
-  }
-
-  // build module
-  public operateBuild = (entryKey: string, stateProps: string): void => {
-    if (this.state[stateProps]) { return; } // if operation is working, return;
-    const stateObj = {} as any;
-    stateObj[stateProps] = true;
-    this.setState(stateObj);
-
-    const cwdPath = path.resolve(defaultWorkspace, this.state.projectName) + '/';
-    const execBuildProcess = exec(`cd ${cwdPath} && venus build -m "${entryKey}"`);
-
-    execBuildProcess.stdout.on('data', (data) => {
-      console.log(`stdout: ${decoder.write(data as Buffer)}`);
-      const isConfirmPropmt = data.toString().includes('Please confirm above modules you could like');
-      if (isConfirmPropmt) {
-        execBuildProcess.stdin.write('\n');
-      }
-    });
-
-    execBuildProcess.on('exit', () => {
-      stateObj[stateProps] = false;
-      this.setState(stateObj);
-      this.operationNotification('build success', `${entryKey} module has built successfully`);
-      console.log('build finish');
-    });
-  }
-
-  // publish code to inte env
-  public operatePublishInte = (entryKey: string, stateProps: string): void => {
-    if (this.state[stateProps]) { return; } // if operation is working, return;
-    const stateObj = {} as any;
-    stateObj[stateProps] = true;
-    this.setState(stateObj);
-
-    const cwdPath = path.resolve(defaultWorkspace, this.state.projectName) + '/';
-    const execPublishInteProcess = exec(`cd ${cwdPath} && venus publish -m "${entryKey}" -f="all"`);
-
-    execPublishInteProcess.stdout.on('data', (data) => {
-      console.log(`stdout: ${decoder.write(data as Buffer)}`);
-      const isConfirmPropmt = data.toString().includes('Please confirm above modules you could like');
-      if (isConfirmPropmt) {
-        execPublishInteProcess.stdin.write('\n');
-      }
-    });
-
-    execPublishInteProcess.on('exit', () => {
-      stateObj[stateProps] = false;
-      this.setState(stateObj);
-      this.operationNotification('publish inte success', `${entryKey} module has published inte successfully`);
-      console.log('publish inte finish');
-    });
-  }
-
-  // publish assets to prod env
-  public operatePublishProd = (entryKey: string, stateProps: string): void => {
-    if (this.state[stateProps]) { return; } // if operation is working, return;
-    const stateObj = {} as any;
-    stateObj[stateProps] = true;
-    this.setState(stateObj);
-
-    const cwdPath = path.resolve(defaultWorkspace, this.state.projectName) + '/';
-    const execPublishProdProcess = exec(`cd ${cwdPath} && venus publish -m "${entryKey}" -f="assets" -e="prod"`);
-
-    execPublishProdProcess.stdout.on('data', (data) => {
-      console.log(`stdout: ${decoder.write(data as Buffer)}`);
-      const isConfirmPropmt = data.toString().includes('Please confirm above modules you could like');
-      if (isConfirmPropmt) {
-        execPublishProdProcess.stdin.write('\n');
-      }
-    });
-
-    execPublishProdProcess.on('exit', () => {
-      stateObj[stateProps] = false;
-      this.setState(stateObj);
-      this.operationNotification('publish prod success', `${entryKey} module has published prod successfully`);
-      console.log('publish prod finish');
-    });
-  }
-
-  // zip module
-  public operateZip = (entryKey: string, stateProps: string): void => {
-    if (this.state[stateProps]) { return; } // if operation is working, return;
-    const stateObj = {} as any;
-    stateObj[stateProps] = true;
-    this.setState(stateObj);
-
-    const cwdPath = path.resolve(defaultWorkspace, this.state.projectName) + '/';
-    const execPublishProdProcess = exec(`cd ${cwdPath} && venus zip -m "${entryKey}"`);
-
-    execPublishProdProcess.stdout.on('data', (data) => {
-      console.log(`stdout: ${decoder.write(data as Buffer)}`);
-      const isConfirmPropmt = data.toString().includes('Please confirm above modules you could like');
-      if (isConfirmPropmt) {
-        execPublishProdProcess.stdin.write('\n');
-      }
-    });
-
-    execPublishProdProcess.on('exit', () => {
-      stateObj[stateProps] = false;
-      this.setState(stateObj);
-      this.operationNotification('zip success', `${entryKey} module has zipped successfully`);
-      console.log('zip finish');
-    });
-  }
-
   public operationNotification(title: string, body: string): any {
     const notificationConfig = {
       title, body
@@ -200,12 +73,127 @@ export default class ProjectMainPanel extends React.Component<ProjectMainPanelPr
     return new Notification(notificationConfig.title, notificationConfig);
   }
 
+  public selectedModules: string[] = [];
+  public checkboxChange = (entryKey: string, e: any) => {
+    const checked = e.target.checked;
+    if (checked) {
+      this.selectedModules.push(entryKey);
+    } else {
+      this.selectedModules.forEach((entry: string, index: number) => {
+        if (entry === entryKey) {
+          this.selectedModules.splice(index, 1);
+        }
+      });
+    }
+  }
+
+  public operate = (cmdType: VenusCmdType, mutiModules: boolean, entryKey: string | undefined, stateName: string, finishCb?: () => any) => {
+    if (mutiModules && !this.selectedModules.length) {
+      // TODO. alert some info to user
+      console.log('no module selected');
+      return;
+    } else if (this.state[stateName]) {
+      console.log('under working');
+      return;
+    }
+    const stateObj = {} as any;
+    stateObj[stateName] = true;
+    this.setState(stateObj);
+    const cwdPath = path.resolve(defaultWorkspace, this.state.projectName) + '/';
+    let cmd: string = '';
+    if (cmdType === 'build') {
+      cmd = `cd ${cwdPath} && venus build -m "${mutiModules ? this.selectedModules.join() : entryKey}"`;
+    } else if (cmdType === 'publishInte') {
+      cmd = `cd ${cwdPath} && venus publish -m "${mutiModules ? this.selectedModules.join() : entryKey}" -f="all"`;
+    } else if (cmdType === 'publishProd') {
+      cmd = `cd ${cwdPath} && venus publish -m "${mutiModules ? this.selectedModules.join() : entryKey}" -f="assets" -e="prod"`;
+    } else if (cmdType === 'zip') {
+      cmd = `cd ${cwdPath} && venus zip -m "${mutiModules ? this.selectedModules.join() : entryKey}"`;
+    }
+
+    const execProcess = exec(cmd);
+    console.log('execting: ', cmd);
+
+    execProcess.stdout.on('data', (data) => {
+      console.log(`stdout: ${decoder.write(data as Buffer)}`);
+      const isConfirmPropmt = data.toString().includes('Please confirm above modules you could like');
+      if (isConfirmPropmt) {
+        (execProcess as ChildProcess).stdin.write('\n');
+      }
+    });
+
+    execProcess.on('exit', () => {
+      stateObj[stateName] = false;
+      this.setState(stateObj, () => {
+        const notificationConfig: { title: string; body: string } = { title: '', body: '' };
+        if (cmdType === 'build') {
+          notificationConfig.title = 'build success';
+          notificationConfig.body = mutiModules ?
+            `${this.selectedModules.join()} modules have built successfully` :
+            `${entryKey} has built successfully`;
+          console.log('build finish');
+        } else if (cmdType === 'publishInte') {
+          notificationConfig.title = 'publish inte success';
+          notificationConfig.body = mutiModules ?
+            `${this.selectedModules.join()} modules have published inte successfully` :
+            `${entryKey} has published inte successfully`;
+          console.log('publish inte finish');
+        } else if (cmdType === 'publishProd') {
+          notificationConfig.title = 'publish prod success';
+          notificationConfig.body = mutiModules ?
+            `${this.selectedModules.join()} modules have published prod successfully` :
+            `${entryKey} has published prod successfully`;
+          console.log('publish prod finish');
+        } else if (cmdType === 'zip') {
+          notificationConfig.title = 'zip success';
+          notificationConfig.body = mutiModules ?
+            `${this.selectedModules.join()} modules have zipped successfully` :
+            `${entryKey} has zipped successfully`;
+          console.log('zip finish');
+        }
+
+        this.operationNotification(notificationConfig.title, notificationConfig.body);
+
+        if (typeof finishCb === 'function') { finishCb(); }
+      });
+    });
+  }
+
   public renderMainPanel() {
     return (
       <div className="panel-content">
+        <div className="muti-module-action">
+          <button className={`action-build ${this.state.buildingSelected ? 'working' : ''}`}
+            onClick={() => this.operate('build', true, undefined, 'buildingSelected')}>
+            {
+              this.state.buildingSelected ? <div className="working-loading"></div> : <div>Build Selected</div>
+            }
+          </button>
+
+          <button className={`action-publish-inte ${this.state.publishingInteSelected ? 'working' : ''}`}
+            onClick={() => this.operate('publishInte', true, undefined, 'publishingInteSelected')}>
+            {
+              this.state.publishingInteSelected ? <div className="working-loading"></div> : <div>Publish Inte Selected</div>
+            }
+          </button>
+
+          <button className={`action-publish-prod ${this.state.publishingProdSelected ? 'working' : ''}`}
+            onClick={() => this.operate('publishProd', true, undefined, 'publishingProdSelected')}>
+            {
+              this.state.publishingProdSelected ? <div className="working-loading"></div> : <div>Publish Prod Selected</div>
+            }
+          </button>
+
+          <button className={`action-zip ${this.state.zippingSelected ? 'working' : ''}`}
+            onClick={() => this.operate('zip', true, undefined, 'zippingSelected')}>
+            {
+              this.state.zippingSelected ? <div className="working-loading"></div> : <div>Zip Selected</div>
+            }
+          </button>
+        </div>
         <div className="modules-list">
           {
-            this.state.formatProjectEntries.map((entry: { entryKey: string, prev: string, last: string, entryPath: string }, index: number) => {
+            this.state.formatProjectEntries.map((entry: ProjectEntriesProps, index: number) => {
               // const serveStateKey = `${index}-serve`;
               const buildStateKey = `${index}-build`;
               const pubInteStateKey = `${index}-publish-inte`;
@@ -220,6 +208,7 @@ export default class ProjectMainPanel extends React.Component<ProjectMainPanelPr
                       entry.last === '' ? null : <span className="last-half">{entry.last}</span>
                     }
                   </div>
+                  <input type="checkbox" onChange={this.checkboxChange.bind(this, entry.entryKey)} />
                   <div className="module-action">
                     {/* <button className={`action-serve ${this.state[serveStateKey] ? 'working' : ''}`}
                       onClick={this.operateServe.bind(this, entry.entryKey, serveStateKey)}>
@@ -229,28 +218,28 @@ export default class ProjectMainPanel extends React.Component<ProjectMainPanelPr
                     </button> */}
 
                     <button className={`action-build ${this.state[buildStateKey] ? 'working' : ''}`}
-                      onClick={this.operateBuild.bind(this, entry.entryKey, buildStateKey)}>
+                      onClick={() => this.operate('build', false, entry.entryKey, buildStateKey)}>
                       {
                         this.state[buildStateKey] ? <div className="working-loading"></div> : <div>Build</div>
                       }
                     </button>
 
                     <button className={`action-publish-inte ${this.state[pubInteStateKey] ? 'working' : ''}`}
-                      onClick={this.operatePublishInte.bind(this, entry.entryKey, pubInteStateKey)}>
+                      onClick={() => this.operate('publishInte', false, entry.entryKey, pubInteStateKey)} >
                       {
                         this.state[pubInteStateKey] ? <div className="working-loading"></div> : <div>Publish Inte</div>
                       }
                     </button>
 
                     <button className={`action-publish-prod ${this.state[pubProdStateKey] ? 'working' : ''}`}
-                      onClick={this.operatePublishInte.bind(this, entry.entryKey, pubProdStateKey)}>
+                      onClick={() => this.operate('publishProd', false, pubProdStateKey, pubProdStateKey)}>
                       {
                         this.state[pubProdStateKey] ? <div className="working-loading"></div> : <div>Publish Prod</div>
                       }
                     </button>
 
                     <button className={`action-zip ${this.state[zipStateKey] ? 'working' : ''}`}
-                      onClick={this.operateZip.bind(this, entry.entryKey, zipStateKey)}>
+                      onClick={() => this.operate('zip', false, entry.entryKey, zipStateKey)}>
                       {
                         this.state[zipStateKey] ? <div className="working-loading"></div> : <div>Zip</div>
                       }
