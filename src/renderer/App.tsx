@@ -55,7 +55,8 @@ export default class App extends React.Component<any, any> {
                 return (
                   <div className={`project ${project.active ? 'active-project' : ''}`} key={index}>
                     <div className="project-name"
-                      onClick={this.selectProject.bind(this, project.projectName, index)}>{project.projectName}</div>
+                      onClick={this.selectProject.bind(this, project.projectName, index)}
+                      dangerouslySetInnerHTML={{ __html: project.projectName }}></div>
                   </div>
                 );
               })

@@ -27,12 +27,27 @@ export default class FuseSearch extends React.Component<FuseSearchProps, any> {
   constructor(props: FuseSearchProps, context: any) {
     super(props, context);
 
-    this.fuse = new Fuse(props.searchData, props.searchOptions);
+    // this.fuse = new Fuse(this.removeHighlight(props.searchData), props.searchOptions);
   }
-  private fuse: Fuse;
+  // private fuse: Fuse;
 
-  private stringInsert(originStr: string, firstInsert: string, secondInsert: string, positions: number[][]): string {
+  private removeHighlight (orginData: ProjectModuleMapping[]) {
+    const regex = /<span className="search-match">|<\/span>/g;
+    orginData.forEach((data) => {
+      data.projectName = data.projectName.replace(regex, '');
+      data.modules.forEach((m) => {
+        m.entryKey = m.entryKey.replace(regex, '');
+      });
+    });
+
+    console.log(`orginData: ${JSON.stringify(orginData)}`);
+    return orginData;
+  }
+
+  private stringInsert(originStr: string, positions: number[][]): string {
     const strLen = originStr.length;
+    const spanTagBegin = '<span class="search-match">';
+    const spanTagClosing = '</span>';
     let posArr: number[] = [];
     positions.forEach((pos) => {
       console.log(`pos ${pos}`);
@@ -52,34 +67,34 @@ export default class FuseSearch extends React.Component<FuseSearchProps, any> {
       if (index === posArrLen - 1) { return; }
       if (highlightFromBegin) {
         if (index % 2 === 0) {
-          newPosArr.push(firstInsert + originStr.slice(pos, arr[index + 1]) + secondInsert);
+          newPosArr.push(spanTagBegin + originStr.slice(pos, arr[index + 1] + 1) + spanTagClosing);
         } else {
-          newPosArr.push(originStr.slice(pos, arr[index + 1]));
+          newPosArr.push(originStr.slice(pos + 1, arr[index + 1]));
         }
       } else {
         if (index % 2 === 0) {
-          newPosArr.push(originStr.slice(pos, arr[index + 1]));
+          newPosArr.push(originStr.slice(pos + 1, arr[index + 1]));
         } else {
-          newPosArr.push(firstInsert + originStr.slice(pos, arr[index + 1]) + secondInsert);
+          newPosArr.push(spanTagBegin + originStr.slice(pos, arr[index + 1] + 1) + spanTagClosing);
         }
       }
     });
-    console.log(newPosArr.join(''));
+    console.log(`newPosArr ${newPosArr.join('')}`);
     return newPosArr.join('');
   }
 
   public projectSearch = (e: any) => {
     const value = e.target.value;
     console.log(value);
-    const searchResult: SearchResult[] = this.fuse.search(value);
+    const fuse = new Fuse(this.removeHighlight(this.props.searchData), this.props.searchOptions);
+    // const searchResult: SearchResult[] = this.fuse.search(value);
+    const searchResult: SearchResult[] = fuse.search(value);
     console.log(searchResult);
-    const spanTagBegin = '<span className="search-match">';
-    const spanTagClosing = '</span>';
     const newProjectModules = searchResult.map((result, index: number) => {
       const matches = result.matches;
       matches.forEach((match) => {
         if (match.key === 'projectName') {
-          const matchValue = this.stringInsert(match.value, spanTagBegin, spanTagClosing, match.indices);
+          const matchValue = this.stringInsert(match.value, match.indices);
           result.item.projectName = matchValue;
         }
       });
