@@ -11,7 +11,7 @@ interface ProjectEntriesProps {
   entryKey: string;
   prev: string;
   last: string;
-  entryPath: string;
+  entryValue: string;
 }
 
 interface ProjectMainPanelProps {
@@ -201,7 +201,7 @@ export default class ProjectMainPanel extends React.Component<ProjectMainPanelPr
               const zipStateKey = `${index}-zip`;
               return (
                 <div key={index} className="module">
-                  <div className="module-icon" onClick={this.openProjectVsCode.bind(this, entry.entryPath)} />
+                  <div className="module-icon" onClick={this.openProjectVsCode.bind(this, entry.entryValue)} />
                   <div className="module-name">
                     <span className="first-half">{entry.prev}</span>
                     {
@@ -232,7 +232,7 @@ export default class ProjectMainPanel extends React.Component<ProjectMainPanelPr
                     </button>
 
                     <button className={`action-publish-prod ${this.state[pubProdStateKey] ? 'working' : ''}`}
-                      onClick={() => this.operate('publishProd', false, pubProdStateKey, pubProdStateKey)}>
+                      onClick={() => this.operate('publishProd', false, entry.entryKey, pubProdStateKey)}>
                       {
                         this.state[pubProdStateKey] ? <div className="working-loading"></div> : <div>Publish Prod</div>
                       }

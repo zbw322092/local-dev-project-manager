@@ -20,3 +20,9 @@ httpshttps://medium.freecodecamp.org/node-js-child-processes-everything-you-need
 
 [7] Understanding execFile, spawn, exec, and fork in Node.js
 https://dzone.com/articles/understanding-execfile-spawn-exec-and-fork-in-node <br/>
+
+[8] Bind is Harmful
+https://basarat.gitbooks.io/typescript/content/docs/tips/bind.html <br/>
+
+[9] How to require a specific string in TypeScript interface
+https://stackoverflow.com/a/45801281/6498272 <br/>

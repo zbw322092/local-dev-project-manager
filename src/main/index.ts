@@ -8,7 +8,12 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 let mainWindow: Electron.BrowserWindow | null;
 
 function createMainWindow() {
-  const window = new BrowserWindow();
+  const window = new BrowserWindow({
+    width: 1000,
+    height: 675,
+    minWidth: 1000,
+    minHeight: 675
+  });
 
   if (isDevelopment) {
     window.webContents.openDevTools();
