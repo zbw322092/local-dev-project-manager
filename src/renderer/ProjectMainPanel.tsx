@@ -8,13 +8,6 @@ import { StringDecoder } from 'string_decoder';
 import { ModuleWebpackEntries } from './DirectoryScanner';
 const decoder = new StringDecoder('utf8');
 
-// interface ModuleWebpackEntries {
-//   entryKey: string;
-//   prev: string;
-//   last: string;
-//   entryValue: string;
-// }
-
 interface ProjectMainPanelProps {
   showWelcomePage: boolean;
   formatProjectEntries: ModuleWebpackEntries[];
@@ -45,23 +38,15 @@ export default class ProjectMainPanel extends React.Component<ProjectMainPanelPr
   }
 
   public static getDerivedStateFromProps(nextProps: any, prevState: any) {
-    // if (nextProps.showWelcomePage !== prevState.showWelcomePage ||
-    //   nextProps.formatProjectEntries.length !== prevState.formatProjectEntries.length ||
-    //   nextProps.projectName !== prevState.projectName
-    // ) {
     return {
       showWelcomePage: nextProps.showWelcomePage,
-      formatProjectEntries: nextProps.formatProjectEntries,
-      projectName: nextProps.projectName
+      formatProjectEntries: nextProps.formatProjectEntries
     };
-    // }
-
-    // return null;
   }
 
   public openProjectVsCode = (entryPath: string) => {
-    const targetprojectPath = path.resolve(defaultWorkspace, this.state.projectName);
-    const targetModulePath = path.resolve(defaultWorkspace, this.state.projectName, entryPath);
+    const targetprojectPath = path.resolve(defaultWorkspace, this.props.projectName);
+    const targetModulePath = path.resolve(defaultWorkspace, this.props.projectName, entryPath);
     if (!fs.existsSync(targetModulePath)) { throw new Error('module entry not exists'); }
 
     exec(`code ${targetprojectPath} ${targetModulePath}`);
@@ -100,7 +85,7 @@ export default class ProjectMainPanel extends React.Component<ProjectMainPanelPr
     const stateObj = {} as any;
     stateObj[stateName] = true;
     this.setState(stateObj);
-    const cwdPath = path.resolve(defaultWorkspace, this.state.projectName) + '/';
+    const cwdPath = path.resolve(defaultWorkspace, this.props.projectName) + '/';
     let cmd: string = '';
     if (cmdType === 'build') {
       cmd = `cd ${cwdPath} && venus build -m "${mutiModules ? this.selectedModules.join() : entryKey}"`;
@@ -195,6 +180,7 @@ export default class ProjectMainPanel extends React.Component<ProjectMainPanelPr
         <div className="modules-list">
           {
             this.state.formatProjectEntries.map((entry: ModuleWebpackEntries, index: number) => {
+              console.log('modules change');
               // const serveStateKey = `${index}-serve`;
               const buildStateKey = `${index}-build`;
               const pubInteStateKey = `${index}-publish-inte`;

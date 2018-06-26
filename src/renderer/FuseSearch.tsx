@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { FuseOptions } from 'fuse.js';
 import * as Fuse from 'fuse.js';
-import { ProjectModuleMapping } from './DirectoryScanner';
+import { ProjectModuleMapping, ModuleWebpackEntries } from './DirectoryScanner';
+import { deepClone } from '../common/deepClone';
 
 interface FuseSearchProps {
-  searchData: any[];
+  searchData: ProjectModuleMapping[];
   searchOptions: FuseOptions;
   className?: string;
   searchResultHandler: (newState: any) => any;
@@ -27,24 +28,11 @@ export default class FuseSearch extends React.Component<FuseSearchProps, any> {
   constructor(props: FuseSearchProps, context: any) {
     super(props, context);
 
-    this.searchData = props.searchData.slice();
-    // this.fuse = new Fuse(this.removeHighlight(props.searchData), props.searchOptions);
+    this.searchData = JSON.parse(JSON.stringify(props.searchData));
+    this.fuse = new Fuse(this.searchData, props.searchOptions);
   }
-  // private fuse: Fuse;
+  private fuse: Fuse;
   private searchData: ProjectModuleMapping[];
-
-  private removeHighlight (orginData: ProjectModuleMapping[]) {
-    const regex = /<span class="search-match">|<\/span>/g;
-    orginData.forEach((data) => {
-      data.projectName = data.projectName.replace(regex, '');
-      data.active = false;
-      data.modules.forEach((m) => {
-        m.entryKey = m.entryKey.replace(regex, '');
-      });
-    });
-
-    return orginData;
-  }
 
   private stringInsert(originStr: string, positions: number[][]): string {
     const strLen = originStr.length;
@@ -90,41 +78,52 @@ export default class FuseSearch extends React.Component<FuseSearchProps, any> {
     const value = e.target.value;
     console.log(value);
     if (value === '') {
-      console.log(this.searchData);
       return this.props.searchResultHandler({
-        projectModuleStructure: this.removeHighlight(this.searchData)
+        projectModuleStructure: this.searchData,
+        activeProjectIndex: 0
       });
     }
-    const fuse = new Fuse(this.removeHighlight(this.searchData), this.props.searchOptions);
-    const searchResult: SearchResult[] = fuse.search(value);
+    const searchResult: SearchResult[] = this.fuse.search(value);
     console.log(searchResult);
-    const newProjectModules: ProjectModuleMapping[] = searchResult.map((result, index: number, arr) => {
-      if (index === 0) {
-        arr[index].item.active = true;
-      }
+    const clonedSearchResult: SearchResult[] = deepClone(searchResult);
+
+    const newProjectModules: ProjectModuleMapping[] = [];
+    clonedSearchResult.forEach((result, index: number, arr) => {
+      const projectModuleitem = result.item;
       const matches = result.matches;
+      if (!matches.length) { return; }
+      let macthedModules: ModuleWebpackEntries[] = [];
       matches.forEach((match, i) => {
         if (match.key === 'projectName') {
           const matchValue = this.stringInsert(match.value, match.indices);
-          result.item.projectName = matchValue;
+          projectModuleitem.projectName = matchValue;
         } else if (match.key === 'modules.entryKey') {
           const matchValue = this.stringInsert(match.value, match.indices);
           if (match.arrayIndex !== undefined) {
-            result.item.modules[match.arrayIndex].highlight = matchValue;
-            console.log(`result.item.modules[${match.arrayIndex}]: result.item.modules[match.arrayIndex]`);
+            projectModuleitem.modules[match.arrayIndex].highlight = matchValue;
+            macthedModules.push(projectModuleitem.modules[match.arrayIndex]);
           }
         }
       });
+      if (!macthedModules.length) {
+        macthedModules = projectModuleitem.modules;
+      }
+      projectModuleitem.modules = macthedModules;
 
-      return result.item;
+      newProjectModules.push(projectModuleitem);
     });
 
-    this.props.searchResultHandler({
-      projectModuleStructure: newProjectModules,
-      showWelcomePage: false,
-      activeProjectName: newProjectModules[0].projectName,
-      formatProjectEntries: newProjectModules[0].modules
-    });
+    const stateObj = {
+      projectModuleStructure: newProjectModules
+    };
+    if (newProjectModules.length) {
+      Object.assign(stateObj, {
+        showWelcomePage: false,
+        activeProjectIndex: 0
+      });
+    }
+
+    this.props.searchResultHandler(stateObj);
   }
 
   public render() {

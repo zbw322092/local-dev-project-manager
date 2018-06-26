@@ -1,6 +1,6 @@
 {
   "name": "local-dev-project-manager",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "local development project manager. List, open, build, publish project and so on",
   "author": "zbw322092 <zbw322092@hotmail.com>",
   "license": "MIT",

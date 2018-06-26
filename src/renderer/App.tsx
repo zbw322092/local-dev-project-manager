@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { DirectoryScanner } from './DirectoryScanner';
+import { DirectoryScanner, ProjectModuleMapping } from './DirectoryScanner';
 import Headers from './Header';
 import ProjectMainPanel from './ProjectMainPanel';
 
@@ -8,32 +8,21 @@ export default class App extends React.Component<any, any> {
     super(props);
 
     this.directoryScanner = new DirectoryScanner();
-    const projectModuleStructure = this.directoryScanner.buildProjectModuleMap();
-    console.log('projectModuleStructure: ', projectModuleStructure);
+    this.projectModuleStructure = this.directoryScanner.buildProjectModuleMap();
 
     this.state = {
-      projectModuleStructure,
-      projectEntries: [],
-      formatProjectEntries: [],
+      projectModuleStructure: this.projectModuleStructure,
       showWelcomePage: true,
-      activeProjectName: ''
+      activeProjectIndex: 0
     };
   }
   private directoryScanner: DirectoryScanner;
+  private projectModuleStructure: ProjectModuleMapping[];
 
   public selectProject = (projectName: string, index: number) => {
-    this.state.projectModuleStructure.forEach((v: any, k: number) => {
-      if (k === index) {
-        return v.active = true;
-      }
-      return v.active = false;
-    });
-
-    const selectedProjectModule = this.state.projectModuleStructure[index] || [];
     this.setState({
-      formatProjectEntries: selectedProjectModule.modules,
-      showWelcomePage: false,
-      activeProjectName: projectName
+      activeProjectIndex: index,
+      showWelcomePage: false
     });
   }
 
@@ -42,10 +31,14 @@ export default class App extends React.Component<any, any> {
   }
 
   public render() {
+    const activeIndex = this.state.activeProjectIndex;
+    const projectModuleStructure = this.state.projectModuleStructure;
+    const activeProject = projectModuleStructure[activeIndex] || [];
+
     return (
       <div className="manager-wrapper">
         <Headers
-          projectModuleStructure={this.state.projectModuleStructure}
+          projectModuleStructure={this.projectModuleStructure}
           searchResultHandler={this.searchResultHandler}
         />
         <div className="manager-container">
@@ -53,9 +46,9 @@ export default class App extends React.Component<any, any> {
             {
               this.state.projectModuleStructure.map((project: any, index: number) => {
                 return (
-                  <div className={`project ${project.active ? 'active-project' : ''}`} key={index}>
+                  <div className={`project ${index === activeIndex ? 'active-project' : ''}`} key={index}>
                     <div className="project-name"
-                      onClick={this.selectProject.bind(this, project.projectName, index)}
+                      onClick={() => { this.selectProject(project.projectName, index); }}
                       dangerouslySetInnerHTML={{ __html: project.projectName }}></div>
                   </div>
                 );
@@ -63,9 +56,9 @@ export default class App extends React.Component<any, any> {
             }
           </div>
           <ProjectMainPanel
-            projectName={this.state.activeProjectName}
+            projectName={activeProject.projectName || ''}
             showWelcomePage={this.state.showWelcomePage}
-            formatProjectEntries={this.state.formatProjectEntries}
+            formatProjectEntries={activeProject.modules || []}
           />
         </div>
       </div>
