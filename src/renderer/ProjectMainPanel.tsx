@@ -5,18 +5,19 @@ import WelcomePage from './WelcomePage';
 import { defaultWorkspace } from '../common/paths';
 import { exec, ChildProcess } from 'child_process';
 import { StringDecoder } from 'string_decoder';
+import { ModuleWebpackEntries } from './DirectoryScanner';
 const decoder = new StringDecoder('utf8');
 
-interface ProjectEntriesProps {
-  entryKey: string;
-  prev: string;
-  last: string;
-  entryValue: string;
-}
+// interface ModuleWebpackEntries {
+//   entryKey: string;
+//   prev: string;
+//   last: string;
+//   entryValue: string;
+// }
 
 interface ProjectMainPanelProps {
   showWelcomePage: boolean;
-  formatProjectEntries: ProjectEntriesProps[];
+  formatProjectEntries: ModuleWebpackEntries[];
   projectName: string;
 }
 
@@ -44,18 +45,18 @@ export default class ProjectMainPanel extends React.Component<ProjectMainPanelPr
   }
 
   public static getDerivedStateFromProps(nextProps: any, prevState: any) {
-    if (nextProps.showWelcomePage !== prevState.showWelcomePage ||
-      nextProps.formatProjectEntries.length !== prevState.formatProjectEntries.length ||
-      nextProps.projectName !== prevState.projectName
-    ) {
-      return {
-        showWelcomePage: nextProps.showWelcomePage,
-        formatProjectEntries: nextProps.formatProjectEntries,
-        projectName: nextProps.projectName
-      };
-    }
+    // if (nextProps.showWelcomePage !== prevState.showWelcomePage ||
+    //   nextProps.formatProjectEntries.length !== prevState.formatProjectEntries.length ||
+    //   nextProps.projectName !== prevState.projectName
+    // ) {
+    return {
+      showWelcomePage: nextProps.showWelcomePage,
+      formatProjectEntries: nextProps.formatProjectEntries,
+      projectName: nextProps.projectName
+    };
+    // }
 
-    return null;
+    // return null;
   }
 
   public openProjectVsCode = (entryPath: string) => {
@@ -193,7 +194,7 @@ export default class ProjectMainPanel extends React.Component<ProjectMainPanelPr
         </div>
         <div className="modules-list">
           {
-            this.state.formatProjectEntries.map((entry: ProjectEntriesProps, index: number) => {
+            this.state.formatProjectEntries.map((entry: ModuleWebpackEntries, index: number) => {
               // const serveStateKey = `${index}-serve`;
               const buildStateKey = `${index}-build`;
               const pubInteStateKey = `${index}-publish-inte`;
@@ -203,9 +204,17 @@ export default class ProjectMainPanel extends React.Component<ProjectMainPanelPr
                 <div key={index} className="module">
                   <div className="module-icon" onClick={this.openProjectVsCode.bind(this, entry.entryValue)} />
                   <div className="module-name">
-                    <span className="first-half">{entry.prev}</span>
                     {
-                      entry.last === '' ? null : <span className="last-half">{entry.last}</span>
+                      entry.highlight ?
+                        <span className="last-half" dangerouslySetInnerHTML={{ __html: entry.highlight }} /> :
+                        (
+                          <span>
+                            <span className="first-half">{entry.prev}</span>
+                            {
+                              entry.last === '' ? null : <span className="last-half">{entry.last}</span>
+                            }
+                          </span>
+                        )
                     }
                   </div>
                   <input type="checkbox" onChange={this.checkboxChange.bind(this, entry.entryKey)} />

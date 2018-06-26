@@ -4,11 +4,12 @@ import * as exprima from 'esprima';
 import { Property } from 'estree';
 import { defaultWorkspace } from '../common/paths';
 
-interface ModuleWebpackEntries {
+export interface ModuleWebpackEntries {
   entryKey: string;
   prev: string;
   last: string;
   entryValue: string;
+  highlight?: string;
 }
 
 export interface ProjectModuleMapping {

@@ -37,6 +37,7 @@ export default class FuseSearch extends React.Component<FuseSearchProps, any> {
     const regex = /<span class="search-match">|<\/span>/g;
     orginData.forEach((data) => {
       data.projectName = data.projectName.replace(regex, '');
+      data.active = false;
       data.modules.forEach((m) => {
         m.entryKey = m.entryKey.replace(regex, '');
       });
@@ -95,15 +96,23 @@ export default class FuseSearch extends React.Component<FuseSearchProps, any> {
       });
     }
     const fuse = new Fuse(this.removeHighlight(this.searchData), this.props.searchOptions);
-    // const searchResult: SearchResult[] = this.fuse.search(value);
     const searchResult: SearchResult[] = fuse.search(value);
     console.log(searchResult);
-    const newProjectModules = searchResult.map((result, index: number) => {
+    const newProjectModules: ProjectModuleMapping[] = searchResult.map((result, index: number, arr) => {
+      if (index === 0) {
+        arr[index].item.active = true;
+      }
       const matches = result.matches;
-      matches.forEach((match) => {
+      matches.forEach((match, i) => {
         if (match.key === 'projectName') {
           const matchValue = this.stringInsert(match.value, match.indices);
           result.item.projectName = matchValue;
+        } else if (match.key === 'modules.entryKey') {
+          const matchValue = this.stringInsert(match.value, match.indices);
+          if (match.arrayIndex !== undefined) {
+            result.item.modules[match.arrayIndex].highlight = matchValue;
+            console.log(`result.item.modules[${match.arrayIndex}]: result.item.modules[match.arrayIndex]`);
+          }
         }
       });
 
@@ -111,7 +120,10 @@ export default class FuseSearch extends React.Component<FuseSearchProps, any> {
     });
 
     this.props.searchResultHandler({
-      projectModuleStructure: newProjectModules
+      projectModuleStructure: newProjectModules,
+      showWelcomePage: false,
+      activeProjectName: newProjectModules[0].projectName,
+      formatProjectEntries: newProjectModules[0].modules
     });
   }
 
