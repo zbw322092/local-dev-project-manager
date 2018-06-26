@@ -27,12 +27,14 @@ export default class FuseSearch extends React.Component<FuseSearchProps, any> {
   constructor(props: FuseSearchProps, context: any) {
     super(props, context);
 
+    this.searchData = props.searchData.slice();
     // this.fuse = new Fuse(this.removeHighlight(props.searchData), props.searchOptions);
   }
   // private fuse: Fuse;
+  private searchData: ProjectModuleMapping[];
 
   private removeHighlight (orginData: ProjectModuleMapping[]) {
-    const regex = /<span className="search-match">|<\/span>/g;
+    const regex = /<span class="search-match">|<\/span>/g;
     orginData.forEach((data) => {
       data.projectName = data.projectName.replace(regex, '');
       data.modules.forEach((m) => {
@@ -40,7 +42,6 @@ export default class FuseSearch extends React.Component<FuseSearchProps, any> {
       });
     });
 
-    console.log(`orginData: ${JSON.stringify(orginData)}`);
     return orginData;
   }
 
@@ -51,6 +52,7 @@ export default class FuseSearch extends React.Component<FuseSearchProps, any> {
     let posArr: number[] = [];
     positions.forEach((pos) => {
       console.log(`pos ${pos}`);
+      pos[1] = pos[1] + 1;
       posArr = posArr.concat(pos);
     });
     let highlightFromBegin = true;
@@ -58,7 +60,7 @@ export default class FuseSearch extends React.Component<FuseSearchProps, any> {
       posArr.unshift(0);
       highlightFromBegin = false;
     }
-    if (posArr[strLen - 1] !== strLen - 1) { posArr.push(strLen); }
+    if (posArr[strLen - 1] !== strLen) { posArr.push(strLen); }
 
     console.log(`posArr: ${posArr}`);
     const posArrLen = posArr.length;
@@ -67,15 +69,15 @@ export default class FuseSearch extends React.Component<FuseSearchProps, any> {
       if (index === posArrLen - 1) { return; }
       if (highlightFromBegin) {
         if (index % 2 === 0) {
-          newPosArr.push(spanTagBegin + originStr.slice(pos, arr[index + 1] + 1) + spanTagClosing);
+          newPosArr.push(spanTagBegin + originStr.slice(pos, arr[index + 1]) + spanTagClosing);
         } else {
-          newPosArr.push(originStr.slice(pos + 1, arr[index + 1]));
+          newPosArr.push(originStr.slice(pos, arr[index + 1]));
         }
       } else {
         if (index % 2 === 0) {
-          newPosArr.push(originStr.slice(pos + 1, arr[index + 1]));
+          newPosArr.push(originStr.slice(pos, arr[index + 1]));
         } else {
-          newPosArr.push(spanTagBegin + originStr.slice(pos, arr[index + 1] + 1) + spanTagClosing);
+          newPosArr.push(spanTagBegin + originStr.slice(pos, arr[index + 1]) + spanTagClosing);
         }
       }
     });
@@ -86,7 +88,13 @@ export default class FuseSearch extends React.Component<FuseSearchProps, any> {
   public projectSearch = (e: any) => {
     const value = e.target.value;
     console.log(value);
-    const fuse = new Fuse(this.removeHighlight(this.props.searchData), this.props.searchOptions);
+    if (value === '') {
+      console.log(this.searchData);
+      return this.props.searchResultHandler({
+        projectModuleStructure: this.removeHighlight(this.searchData)
+      });
+    }
+    const fuse = new Fuse(this.removeHighlight(this.searchData), this.props.searchOptions);
     // const searchResult: SearchResult[] = this.fuse.search(value);
     const searchResult: SearchResult[] = fuse.search(value);
     console.log(searchResult);
@@ -102,9 +110,6 @@ export default class FuseSearch extends React.Component<FuseSearchProps, any> {
       return result.item;
     });
 
-    // const newProjectModule = searchResult.map((result, index: number) => {
-    //   return result.item;
-    // });
     this.props.searchResultHandler({
       projectModuleStructure: newProjectModules
     });
