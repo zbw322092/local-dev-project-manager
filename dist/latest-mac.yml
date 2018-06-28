@@ -1,0 +1,10 @@
+version: 0.0.7
+files:
+  - url: local-dev-project-manager-0.0.7-mac.zip
+    sha512: Ev0+IxRssgCeqHW7r9toc9KLx81telJ7lZZnKJlFaW1N/gjy3IuaNx3Pcz3BXReT/sx1NLjJN5+uaKBHM1i+UA==
+  - url: local-dev-project-manager-0.0.7.dmg
+    sha512: D60V79+iQog5PPshLnA+TSYvjJFoOCSnKY36B241WHH4STzMoAPIHoy6J4s4Zpc9RSRdscNCq2fI6csIziP7Wg==
+    size: 52387377
+path: local-dev-project-manager-0.0.7-mac.zip
+sha512: Ev0+IxRssgCeqHW7r9toc9KLx81telJ7lZZnKJlFaW1N/gjy3IuaNx3Pcz3BXReT/sx1NLjJN5+uaKBHM1i+UA==
+releaseDate: '2018-06-28T15:29:48.687Z'

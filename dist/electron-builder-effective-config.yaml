@@ -1,0 +1,23 @@
+directories:
+  output: dist
+  buildResources: build
+extraMetadata:
+  main: main.js
+files:
+  - from: .
+    filter:
+      - package.json
+  - from: dist/main
+  - from: dist/renderer
+  - from: dist/renderer-dll
+extraResources:
+  - from: static
+    to: static
+appId: bowenwebtech.com.LocalDevProjectManager
+productName: venus manager
+copyright: Copyright © 2018 Bowen
+icon: ../dist/icon.png
+mac:
+  category: public.app-category.utilities
+extends: electron-webpack/electron-builder.yml
+electronVersion: 2.0.2

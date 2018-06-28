@@ -26,3 +26,6 @@ https://basarat.gitbooks.io/typescript/content/docs/tips/bind.html <br/>
 
 [9] How to require a specific string in TypeScript interface
 https://stackoverflow.com/a/45801281/6498272 <br/>
+
+[10] [todo] Interop’s Labyrinth: Sharing Code Between Web & Electron Apps
+https://slack.engineering/interops-labyrinth-sharing-code-between-web-electron-apps-f9474d62eccc <br/>
