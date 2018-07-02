@@ -6,6 +6,9 @@ builder.build({
     productName: 'venus manager',
     copyright: 'Copyright © 2018 Bowen',
     icon: '../dist/icon.png',
+    directories: {
+      output: 'dist/'
+    },
     mac: {
       category: 'public.app-category.utilities'
     }

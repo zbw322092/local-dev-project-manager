@@ -1,5 +1,5 @@
 directories:
-  output: dist
+  output: dist/
   buildResources: build
 extraMetadata:
   main: main.js

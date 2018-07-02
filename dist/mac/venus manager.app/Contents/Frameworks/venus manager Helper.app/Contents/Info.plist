@@ -27,6 +27,6 @@
     <key>CFBundleDisplayName</key>
     <string>venus manager Helper</string>
     <key>CFBundleVersion</key>
-    <string>0.0.7</string>
+    <string>0.0.8</string>
   </dict>
 </plist>

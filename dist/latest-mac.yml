@@ -1,10 +1,10 @@
-version: 0.0.7
+version: 0.0.8
 files:
-  - url: local-dev-project-manager-0.0.7-mac.zip
-    sha512: Ev0+IxRssgCeqHW7r9toc9KLx81telJ7lZZnKJlFaW1N/gjy3IuaNx3Pcz3BXReT/sx1NLjJN5+uaKBHM1i+UA==
-  - url: local-dev-project-manager-0.0.7.dmg
-    sha512: D60V79+iQog5PPshLnA+TSYvjJFoOCSnKY36B241WHH4STzMoAPIHoy6J4s4Zpc9RSRdscNCq2fI6csIziP7Wg==
-    size: 52387377
-path: local-dev-project-manager-0.0.7-mac.zip
-sha512: Ev0+IxRssgCeqHW7r9toc9KLx81telJ7lZZnKJlFaW1N/gjy3IuaNx3Pcz3BXReT/sx1NLjJN5+uaKBHM1i+UA==
-releaseDate: '2018-06-28T15:29:48.687Z'
+  - url: local-dev-project-manager-0.0.8-mac.zip
+    sha512: WQDoBsUdqK/f/XikESo4LZZPSUlbW4bhTtrhoRW0I3zfBMTG0wyMBokJ96FQYPjmFcUxn+XLsUK9NYWI1tJspQ==
+  - url: local-dev-project-manager-0.0.8.dmg
+    sha512: NzZI6vwgLIONHWFM0oSU5dWNUaoOYF9Ku2/duzXRdW4luISMDqhF1oI1aEM9qdO+0PIfhsVbzufGE4jAFDgZBw==
+    size: 52397952
+path: local-dev-project-manager-0.0.8-mac.zip
+sha512: WQDoBsUdqK/f/XikESo4LZZPSUlbW4bhTtrhoRW0I3zfBMTG0wyMBokJ96FQYPjmFcUxn+XLsUK9NYWI1tJspQ==
+releaseDate: '2018-07-02T09:50:33.661Z'

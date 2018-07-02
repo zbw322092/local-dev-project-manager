@@ -10,7 +10,7 @@
 		</data>
 		<key>Resources/app.asar</key>
 		<data>
-		kvPKeyHAqaIdKMiwTSHIpKchyq8=
+		OHJIaUAdxcUCP9WyniAMp89xy0Q=
 		</data>
 		<key>Resources/electron.asar</key>
 		<data>
@@ -55,7 +55,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			OycyLCZi8Q9LWA7srSqdBtNIekc=
+			GSZGa0QRFfFMOtIwgtKTNHLTtKo=
 			</data>
 			<key>requirement</key>
 			<string>identifier "com.github.electron.framework" and anchor apple generic and certificate leaf[subject.CN] = "Mac Developer: zbw322092@hotmail.com (LCG59W758X)" and certificate 1[field.1.2.840.113635.100.6.2.1] /* exists */</string>
@@ -82,7 +82,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			E7s2Z2ijrH1G3FZFSLj0lG+JX9M=
+			mLSJ6pT0/cvouIwId5tExzSbqmc=
 			</data>
 			<key>requirement</key>
 			<string>identifier "com.github.Squirrel" and anchor apple generic and certificate leaf[subject.CN] = "Mac Developer: zbw322092@hotmail.com (LCG59W758X)" and certificate 1[field.1.2.840.113635.100.6.2.1] /* exists */</string>
@@ -91,7 +91,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			k8Ltk6jKTIIoB6JxUUodNLpuy14=
+			lJJn43Xc9jU/izPC/DhDJtLwjXY=
 			</data>
 			<key>requirement</key>
 			<string>identifier "bowenwebtech.com.LocalDevProjectManager.helper.EH" and anchor apple generic and certificate leaf[subject.CN] = "Mac Developer: zbw322092@hotmail.com (LCG59W758X)" and certificate 1[field.1.2.840.113635.100.6.2.1] /* exists */</string>
@@ -100,7 +100,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			1VDXcsl09OhmDOP1tG4fBJ34jKQ=
+			S42Uh8xopVTNhH02bxmBpBZyAxg=
 			</data>
 			<key>requirement</key>
 			<string>identifier "bowenwebtech.com.LocalDevProjectManager.helper.NP" and anchor apple generic and certificate leaf[subject.CN] = "Mac Developer: zbw322092@hotmail.com (LCG59W758X)" and certificate 1[field.1.2.840.113635.100.6.2.1] /* exists */</string>
@@ -109,7 +109,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			oeuFhI7jwlNP+wICCQE3gSa2iLg=
+			HTCzlKFp3jGloN5zDxntVZRtjqA=
 			</data>
 			<key>requirement</key>
 			<string>identifier "bowenwebtech.com.LocalDevProjectManager.helper" and anchor apple generic and certificate leaf[subject.CN] = "Mac Developer: zbw322092@hotmail.com (LCG59W758X)" and certificate 1[field.1.2.840.113635.100.6.2.1] /* exists */</string>
@@ -129,11 +129,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			kvPKeyHAqaIdKMiwTSHIpKchyq8=
+			OHJIaUAdxcUCP9WyniAMp89xy0Q=
 			</data>
 			<key>hash2</key>
 			<data>
-			jG9llq1AjZHznuwIUpreovqu955IJMGMg6P3KeY6KHQ=
+			/eJtBOq4L2pnbFz54Y7TStRDHlb9LBjcjkfAEarc5jA=
 			</data>
 		</dict>
 		<key>Resources/electron.asar</key>

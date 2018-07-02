@@ -3,10 +3,13 @@ import * as path from 'path';
 import * as fs from 'fs';
 import WelcomePage from './WelcomePage';
 import { defaultWorkspace } from '../common/paths';
+const fixPath = require('fix-path');
 import { exec, ChildProcess } from 'child_process';
 import { StringDecoder } from 'string_decoder';
 import { ModuleWebpackEntries } from './DirectoryScanner';
 const decoder = new StringDecoder('utf8');
+
+fixPath();
 
 interface ProjectMainPanelProps {
   showWelcomePage: boolean;
@@ -47,6 +50,7 @@ export default class ProjectMainPanel extends React.Component<ProjectMainPanelPr
   public openProjectVsCode = (entryPath: string) => {
     const targetprojectPath = path.resolve(defaultWorkspace, this.props.projectName);
     const targetModulePath = path.resolve(defaultWorkspace, this.props.projectName, entryPath);
+
     if (!fs.existsSync(targetModulePath)) { throw new Error('module entry not exists'); }
 
     exec(`code ${targetprojectPath} ${targetModulePath}`);
